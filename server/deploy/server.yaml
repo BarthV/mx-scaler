@@ -1,0 +1,29 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server
+spec:
+  selector:
+    matchLabels:
+      app: mx-server
+  template:
+    metadata:
+      labels:
+        app: mx-server
+    spec:
+      containers:
+      - name: server
+        image: localhost:32000/server
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 8000
+        resources:
+          limits:
+            cpu: 2
+            memory: 4Gi
+          requests:
+            cpu: 2
+            memory: 4Gi
+              

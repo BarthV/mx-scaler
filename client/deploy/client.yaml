@@ -1,0 +1,24 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: client
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: client
+        image: localhost:32000/client
+        imagePullPolicy: Always
+        env:
+        - name: SRVHTTPADDRESS
+          value: http://server
+        resources:
+          limits:
+            cpu: 1
+            memory: 2Gi
+          requests:
+            cpu: 1
+            memory: 2Gi
+              
