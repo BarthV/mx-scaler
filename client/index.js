@@ -13,6 +13,7 @@ async function connectAndDisconnect(){
 }
 
 (async () => {
+	console.log('Starting stress testing');
 	for(let i = 0; i < 200; i++){
 		connectAndDisconnect();
 		await sleep(500);
