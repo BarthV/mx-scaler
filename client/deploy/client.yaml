@@ -1,24 +1,28 @@
 ---
-apiVersion: batch/v1
-kind: Job
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: client
 spec:
+  selector:
+    matchLabels:
+      app: mx-client
   template:
+    metadata:
+      labels:
+        app: mx-client
     spec:
-      restartPolicy: Never
       containers:
       - name: client
         image: localhost:32000/client
         imagePullPolicy: Always
         env:
         - name: SRVHTTPADDRESS
-          value: http://server
+          value: http://server:8000
         resources:
           limits:
-            cpu: 1
-            memory: 2Gi
+            cpu: 600m
+            memory: 1Gi
           requests:
-            cpu: 1
-            memory: 2Gi
-              
+            cpu: 200m
+            memory: 200Mi

@@ -21,9 +21,22 @@ spec:
           containerPort: 8000
         resources:
           limits:
-            cpu: 2
-            memory: 4Gi
+            cpu: 1
+            memory: 2Gi
           requests:
-            cpu: 2
-            memory: 4Gi
-              
+            cpu: 1
+            memory: 2Gi
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: server
+spec:
+  type: LoadBalancer
+  selector:
+    app: mx-server
+  ports:
+  - name: http
+    port: 8000
+    targetPort: http

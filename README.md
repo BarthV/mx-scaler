@@ -22,5 +22,6 @@ Fix package.json + add a startup log line to the client app to avoid keeping it 
 
 * Starting to describe apps as kubernetes API object
 * Using ENV var for configuration in client app
+* Expose server app in a kube service, making everything works in a single instance only model
 
 ## how to
