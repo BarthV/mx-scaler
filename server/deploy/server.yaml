@@ -17,8 +17,10 @@ spec:
         image: localhost:32000/server
         imagePullPolicy: Always
         ports:
-        - name: http
+        - name: http-ws
           containerPort: 8000
+        - name: http-prom
+          containerPort: 9000
         resources:
           limits:
             cpu: 1
@@ -37,6 +39,9 @@ spec:
   selector:
     app: mx-server
   ports:
-  - name: http
+  - name: http-ws
     port: 8000
-    targetPort: http
+    targetPort: http-ws
+  - name: http-prom
+    port: 9000
+    targetPort: http-prom

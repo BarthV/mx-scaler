@@ -2,6 +2,42 @@ var os = require('os-utils');
 const {Server} = require("socket.io");
 const server = new Server(8000);
 
+
+// simple web server used for exposing prometheus metrics
+const express = require('express');
+const promHttp = express();
+const promHttpPort = process.env.METRICSPORT || 9000;
+
+// prometheus metrics
+const promClient = require('prom-client');
+const register = new promClient.Registry();
+const metricsPrefix = "mx_server_";
+register.setDefaultLabels({app: "mx-server"})
+
+promClient.collectDefaultMetrics({ register, prefix: metricsPrefix });
+
+const fpsCounter = new promClient.Counter({
+  name: 'processed_fps_total',
+	prefix: metricsPrefix,
+  help: 'total number of FPS processed since the beginning',
+});
+register.registerMetric(fpsCounter);
+
+const connCounter = new promClient.Counter({
+  name: 'handled_conn_total',
+	prefix: metricsPrefix,
+  help: 'total number of client connections processed since the beginning',
+});
+register.registerMetric(connCounter);
+
+const connGauge = new promClient.Gauge({
+  name: 'active_conn_gauge',
+	prefix: metricsPrefix,
+  help: 'Number of active client connections at a given time',
+});
+register.registerMetric(connGauge);
+
+
 let clients = [];
 
 // event fired every time a new client connects:
@@ -9,6 +45,8 @@ server.on("connection", (socket) => {
     // console.info(`Client connected [id=${socket.id}]`);
     // Add client to the list
     clients.push(socket);
+		connCounter.inc();
+		connGauge.inc();
 
     // when socket disconnects, remove it from the list:
     socket.on("disconnect", () => {
@@ -19,6 +57,7 @@ server.on("connection", (socket) => {
 			index = clients.indexOf(socket);
 			if(index >= 0) clients.splice(index, 1);
 		}while(index >= 0);
+		connGauge.set(clients.length);
     });
 });
 
@@ -30,6 +69,7 @@ let values = [];
 
 setInterval(() => {
 	counter++;
+	fpsCounter.inc();
     for (const client of clients) {
 		for(let i = 0; i < 5000; i++){
 			value = Math.random() * Math.sqrt(value);
@@ -56,3 +96,18 @@ setInterval(() => {
 setInterval(() => {
 	values = [];
 }, 5000);
+
+
+// metrics route & webserver management
+promHttp.get('/metrics', async (req, res) => {
+	try {
+		res.set('Content-Type', register.contentType);
+		res.status(200);
+		res.end(await register.metrics());
+	} catch (ex) {
+		res.status(500).end(ex);
+	}
+});
+
+console.log(`Web server listening to port ${promHttpPort}, metrics exposed on /metrics endpoint`);
+promHttp.listen(promHttpPort);
