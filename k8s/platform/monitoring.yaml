@@ -33,4 +33,41 @@ spec:
         kind: HelmRepository
         name: prometheus-community
       interval: 15m
-  values: {}
+  values:
+    prometheus:
+      prometheusSpec:
+        ruleSelectorNilUsesHelmValues: false
+        serviceMonitorSelectorNilUsesHelmValues: false
+        podMonitorSelectorNilUsesHelmValues: false
+    kubelet:
+      serviceMonitor:
+        cAdvisor: true
+        probes: true
+    grafana:
+      adminPassword: admin # better stored in a Secret API object, but it's not the main goal of the exercice
+      dashboardProviders:
+        dashboardproviders.yaml:
+          apiVersion: 1
+          providers:
+          - name: 'default'
+            orgId: 1
+            folder: ''
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/default
+      dashboards:
+        default:
+          node-exporter:
+            gnetId: 1860
+            revision: 22
+            datasource: "Prometheus"
+          nodejs-prom-client-metrics:
+            gnetId: 11956
+            revision: 1
+            datasource: "Prometheus"
+      sidecar:
+        dashboards:
+          searchNamespace: ALL
+          enabled: true

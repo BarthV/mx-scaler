@@ -5,3 +5,4 @@ kind: Kustomization
 resources:
 - server-app.yaml
 - servicemonitor.yaml
+- monitoring-dashboard.yaml

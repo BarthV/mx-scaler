@@ -34,5 +34,6 @@ Testing server app behavior when scaling on multiple instances behind default se
 
 * Adding prometheus library to server app + registering some useful metrics
 * Setup fluxv2 + prometheus stack
+* Adding a dashboard dedicated to the server app (+ many other community available ones)
 
 ## how to

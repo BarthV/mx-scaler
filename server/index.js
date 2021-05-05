@@ -14,25 +14,22 @@ const register = new promClient.Registry();
 const metricsPrefix = "mx_server_";
 register.setDefaultLabels({app: "mx-server"})
 
-promClient.collectDefaultMetrics({ register, prefix: metricsPrefix });
+promClient.collectDefaultMetrics({ register }); // community dashboard are not using prefixes, skip it here
 
 const fpsCounter = new promClient.Counter({
-  name: 'processed_fps_total',
-	prefix: metricsPrefix,
+  name: metricsPrefix + 'processed_fps_total',
   help: 'total number of FPS processed since the beginning',
 });
 register.registerMetric(fpsCounter);
 
 const connCounter = new promClient.Counter({
-  name: 'handled_conn_total',
-	prefix: metricsPrefix,
+  name: metricsPrefix + 'handled_conn_total',
   help: 'total number of client connections processed since the beginning',
 });
 register.registerMetric(connCounter);
 
 const connGauge = new promClient.Gauge({
-  name: 'active_conn_gauge',
-	prefix: metricsPrefix,
+  name: metricsPrefix + 'active_conn_gauge',
   help: 'Number of active client connections at a given time',
 });
 register.registerMetric(connGauge);
