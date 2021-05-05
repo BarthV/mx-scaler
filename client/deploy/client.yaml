@@ -17,7 +17,7 @@ spec:
         image: localhost:32000/client
         imagePullPolicy: Always
         env:
-        - name: SRVHTTPADDRESS
+        - name: SRVURL
           value: http://server:8000
         resources:
           limits:

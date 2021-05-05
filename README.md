@@ -24,4 +24,14 @@ Fix package.json + add a startup log line to the client app to avoid keeping it 
 * Using ENV var for configuration in client app
 * Expose server app in a kube service, making everything works in a single instance only model
 
+Trying to find a rough estimate of what could be app limits using empirical "fail & retry" strategy.
+
+Testing server app behavior when scaling on multiple instances behind default service loadbalancer.
+
+/!\ socket.io requires sticky session when running on multiple instances. It seems not really stateless : it creates multiple server "routines" at each socket call, so we're seeing more clients on server-side than requested ...
+
+/!\ default k8s service only provides clientIP stickiness. This is not enough in our case because we have only 1 client instance running all 200 connections (from the same internal IP)
+
+
+
 ## how to
