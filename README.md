@@ -32,6 +32,7 @@ Testing server app behavior when scaling on multiple instances behind default se
 
 /!\ default k8s service only provides clientIP stickiness. This is not enough in our case because we have only 1 client instance running all 200 connections (from the same internal IP)
 
-
+* Adding prometheus library to server app + registering some useful metrics
+* Setup fluxv2 + prometheus stack
 
 ## how to

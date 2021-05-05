@@ -1,0 +1,16 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: mx-server-metrics
+  labels:
+    app: mx-server
+spec:
+  selector:
+    matchLabels:
+      app: mx-server
+  endpoints:
+  - port: http-prom
+    scheme: http
+    path: /metrics
+    interval: 5s

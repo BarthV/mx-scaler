@@ -3,6 +3,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: server
+  labels:
+    app: mx-server
 spec:
   selector:
     matchLabels:
@@ -34,6 +36,8 @@ apiVersion: v1
 kind: Service
 metadata:
   name: server
+  labels:
+    app: mx-server
 spec:
   type: LoadBalancer
   selector:

@@ -6,3 +6,4 @@ resources:
   # - cert-manager.yaml
   - flux-system.yaml
   # - ingress-nginx.yaml
+  - monitoring.yaml
