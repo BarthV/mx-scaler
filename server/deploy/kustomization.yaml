@@ -6,3 +6,4 @@ resources:
 - server-app.yaml
 - servicemonitor.yaml
 - monitoring-dashboard.yaml
+- keda-scaler.yaml

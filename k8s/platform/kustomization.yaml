@@ -6,4 +6,5 @@ resources:
   # - cert-manager.yaml
   - flux-system.yaml
   # - ingress-nginx.yaml
+  - keda-system.yaml
   - monitoring.yaml

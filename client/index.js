@@ -8,8 +8,8 @@ function sleep(delay){
 
 async function connectAndDisconnect(){
 	const socket = io.connect(process.env.SRVURL, {
-		upgrade: true, // default setting
-		transport: ['polling', 'websocket'], // default setting
+		upgrade: true, // default is true
+		transport: ['polling', 'websocket'], // default is ['polling', 'websocket']
 	});
 	await sleep(2 * 60 * 1000); // Original sleep time was (10 * 60 * 1000) = 10min , 2min asked in document
 	socket.disconnect();
@@ -21,5 +21,8 @@ async function connectAndDisconnect(){
 		connectAndDisconnect();
 		await sleep(500);
 	}
-	console.log("Finished spawing 200 clients");
+	console.log("Finished spawing 200 clients, going in sleep mode during 5min before exit");
+	for(let i = 0; i < 600; i++){
+		await sleep(500);
+	}
 })();

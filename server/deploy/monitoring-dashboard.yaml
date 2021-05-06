@@ -4,6 +4,7 @@ kind: ConfigMap
 metadata:
   name: dashboards-grafana-mx-server
   labels:
+    app: mx-server
     grafana_dashboard: "yes"
 data:
   mx-server-metrology.json: |-

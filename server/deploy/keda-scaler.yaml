@@ -1,0 +1,29 @@
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: server-scaler
+spec:
+  scaleTargetRef:
+    name: server
+  pollingInterval: 4
+  cooldownPeriod:  10
+  minReplicaCount: 1
+  maxReplicaCount: 20
+  advanced:
+    restoreToOriginalReplicaCount: true
+    horizontalPodAutoscalerConfig:
+      behavior:
+        scaleDown:
+          stabilizationWindowSeconds: 50
+          policies:
+          - type: Percent
+            value: 66
+            periodSeconds: 15
+  triggers:
+  - type: prometheus
+    metadata:
+      serverAddress: http://prometheus-kube-prometheus-prometheus.monitoring.svc:9090
+      metricName: total_server_conn_count
+      threshold: "10"
+      query: sum(mx_server_active_conn_gauge{app="mx-server"})

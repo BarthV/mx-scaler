@@ -18,18 +18,29 @@ spec:
       - name: server
         image: localhost:32000/server
         imagePullPolicy: Always
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: http
+          initialDelaySeconds: 0
+          periodSeconds: 1
+          failureThreshold: 4
+        livenessProbe:
+          httpGet:
+            path: /ready
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 5
         ports:
-        - name: http-ws
+        - name: http
           containerPort: 8000
-        - name: http-prom
-          containerPort: 9000
         resources:
           limits:
-            cpu: 1
-            memory: 2Gi
+            cpu: 750m
+            memory: 1900Mi
           requests:
-            cpu: 1
-            memory: 2Gi
+            cpu: 750m
+            memory: 1900Mi
 
 ---
 apiVersion: v1
@@ -43,9 +54,6 @@ spec:
   selector:
     app: mx-server
   ports:
-  - name: http-ws
+  - name: http
     port: 8000
-    targetPort: http-ws
-  - name: http-prom
-    port: 9000
-    targetPort: http-prom
+    targetPort: http

@@ -21,8 +21,8 @@ spec:
           value: http://server:8000
         resources:
           limits:
-            cpu: 600m
-            memory: 1Gi
+            cpu: 400m
+            memory: 400Mi
           requests:
-            cpu: 200m
-            memory: 200Mi
+            cpu: 150m
+            memory: 150Mi

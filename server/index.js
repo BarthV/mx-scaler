@@ -1,12 +1,18 @@
-var os = require('os-utils');
-const {Server} = require("socket.io");
-const server = new Server(8000);
-
-
-// simple web server used for exposing prometheus metrics
+// simple web server used for exposing prometheus metrics, readiness check & wrapping socket.io
 const express = require('express');
-const promHttp = express();
-const promHttpPort = process.env.METRICSPORT || 9000;
+const http = express();
+const httpPort = process.env.LISTENPORT || 8000;
+
+var os = require('os-utils');
+// const {Server} = require("socket.io"); // commented because socket.io is now wrapped in express webserver
+// const server = new Server(8000);       // same here
+
+// start listening http server
+const httpSrv = http.listen(httpPort);
+const server = require('socket.io')(httpSrv); // "bind" socket.io engine to the http server
+http.on('listening', function() {
+	console.log(`Web server listening to port :${httpPort}`);
+});
 
 // prometheus metrics
 const promClient = require('prom-client');
@@ -21,6 +27,12 @@ const fpsCounter = new promClient.Counter({
   help: 'total number of FPS processed since the beginning',
 });
 register.registerMetric(fpsCounter);
+
+const fpsGauge = new promClient.Gauge({
+  name: metricsPrefix + 'fps_gauge',
+  help: 'Current number of FPS rendered by the server',
+});
+register.registerMetric(fpsGauge);
 
 const connCounter = new promClient.Counter({
   name: metricsPrefix + 'handled_conn_total',
@@ -83,6 +95,7 @@ setInterval(() => {
 		const newDate = Date.now();
 		const memoryUsed = Math.round(process.memoryUsage().heapUsed / 1024 / 1024 * 100) / 100;
 		const fps = Math.round(counter * 1000 / (newDate - lastDate) * 100) / 100;
+		fpsGauge.set(fps)
 		cpuUsed = Math.round(cpuUsed * 10000) / 100;
 		console.log(`${clients.length} Clients. ${fps} avg fps. ${memoryUsed} MB. ${cpuUsed}% cpu.`);
 		counter = 0;
@@ -96,7 +109,7 @@ setInterval(() => {
 
 
 // metrics route & webserver management
-promHttp.get('/metrics', async (req, res) => {
+http.get('/metrics', async (req, res) => {
 	try {
 		res.set('Content-Type', register.contentType);
 		res.status(200);
@@ -106,5 +119,12 @@ promHttp.get('/metrics', async (req, res) => {
 	}
 });
 
-console.log(`Web server listening to port ${promHttpPort}, metrics exposed on /metrics endpoint`);
-promHttp.listen(promHttpPort);
+// this is a readiness check going through the exact same webserver as socket.io :
+// if we're able to respond to this, we'll be able to respond to real user requests
+http.get('/ready', async (req, res) => {
+	try {
+		res.status(200).end("OK");
+	} catch (ex) {
+		res.status(500).end(ex);
+	}
+});

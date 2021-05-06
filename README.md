@@ -34,6 +34,11 @@ Testing server app behavior when scaling on multiple instances behind default se
 
 * Adding prometheus library to server app + registering some useful metrics
 * Setup fluxv2 + prometheus stack
-* Adding a dashboard dedicated to the server app (+ many other community available ones)
+* Adding a super-duper dashboard dedicated to the server app (+ many other community available ones). Store it kube in a CM.
+* Installing Kubernetes Event Driven Autoscaler ... because this is the way ( and the overall goal here :-D )
+* Adding a scaling rule based on the total active connections on server app
+* Implementing a readiness/liveness http endpoint in server app to help LB during scaling maneuvers
+* Tuning (a bit) app container requests & limits to make everything fit on my laptop
+* 
 
 ## how to
