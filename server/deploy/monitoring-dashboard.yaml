@@ -25,7 +25,6 @@ data:
       "editable": true,
       "gnetId": null,
       "graphTooltip": 1,
-      "id": 27,
       "links": [],
       "panels": [
         {
@@ -89,14 +88,31 @@ data:
           "targets": [
             {
               "exemplar": true,
-              "expr": "sum(irate(mx_server_processed_fps_total{app=\"mx-server\"}[20s])) / count(nodejs_version_info{app=\"mx-server\"})",
+              "expr": "quantile(0.5, irate(mx_server_processed_fps_total{app=\"mx-server\"}[20s]))",
               "interval": "",
-              "legendFormat": "mean FPS",
+              "legendFormat": "50 pctl",
               "refId": "A"
+            },
+            {
+              "exemplar": true,
+              "expr": "quantile(0.2, irate(mx_server_processed_fps_total{app=\"mx-server\"}[20s]))",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "20 pctl",
+              "refId": "B"
+            },
+            {
+              "exemplar": true,
+              "expr": "quantile(0.05, irate(mx_server_processed_fps_total{app=\"mx-server\"}[20s]))",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "5 pctl",
+              "refId": "C"
             }
           ],
           "thresholds": [
             {
+              "$$hashKey": "object:79",
               "colorMode": "warning",
               "fill": false,
               "line": true,
@@ -105,6 +121,7 @@ data:
               "yaxis": "left"
             },
             {
+              "$$hashKey": "object:80",
               "colorMode": "critical",
               "fill": true,
               "line": true,
@@ -116,7 +133,7 @@ data:
           "timeFrom": null,
           "timeRegions": [],
           "timeShift": null,
-          "title": "Mean Processed FPS",
+          "title": "Processed FPS quantiles",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -132,6 +149,7 @@ data:
           },
           "yaxes": [
             {
+              "$$hashKey": "object:51",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -140,6 +158,7 @@ data:
               "show": true
             },
             {
+              "$$hashKey": "object:52",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -172,7 +191,7 @@ data:
             "y": 1
           },
           "hiddenSeries": false,
-          "id": 2,
+          "id": 6,
           "legend": {
             "avg": false,
             "current": false,
@@ -200,17 +219,34 @@ data:
           "targets": [
             {
               "exemplar": true,
-              "expr": "sum(mx_server_active_conn_gauge{app=\"mx-server\"})",
+              "expr": "quantile(0.5,mx_server_active_conn_gauge{app=\"mx-server\"})",
+              "hide": false,
               "interval": "",
-              "legendFormat": "connections",
+              "legendFormat": "50 pctl",
               "refId": "A"
+            },
+            {
+              "exemplar": true,
+              "expr": "quantile(0.8,mx_server_active_conn_gauge{app=\"mx-server\"})",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "80 pctl",
+              "refId": "B"
+            },
+            {
+              "exemplar": true,
+              "expr": "quantile(0.95,mx_server_active_conn_gauge{app=\"mx-server\"})",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "95 pctl",
+              "refId": "C"
             }
           ],
           "thresholds": [],
           "timeFrom": null,
           "timeRegions": [],
           "timeShift": null,
-          "title": "Total App Connections",
+          "title": "Connections Per Instances quantiles",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -226,6 +262,7 @@ data:
           },
           "yaxes": [
             {
+              "$$hashKey": "object:50",
               "decimals": null,
               "format": "short",
               "label": "",
@@ -235,6 +272,7 @@ data:
               "show": true
             },
             {
+              "$$hashKey": "object:51",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -457,7 +495,7 @@ data:
             "y": 12
           },
           "hiddenSeries": false,
-          "id": 6,
+          "id": 2,
           "legend": {
             "avg": false,
             "current": false,
@@ -485,7 +523,7 @@ data:
           "targets": [
             {
               "exemplar": true,
-              "expr": "sum(mx_server_active_conn_gauge{app=\"mx-server\"}) / count(nodejs_version_info{app=\"mx-server\"})",
+              "expr": "sum(mx_server_active_conn_gauge{app=\"mx-server\"})",
               "interval": "",
               "legendFormat": "connections",
               "refId": "A"
@@ -495,7 +533,7 @@ data:
           "timeFrom": null,
           "timeRegions": [],
           "timeShift": null,
-          "title": "Mean Connections Per Instances",
+          "title": "Total App Connections",
           "tooltip": {
             "shared": true,
             "sort": 0,
@@ -831,7 +869,7 @@ data:
           "type": "row"
         }
       ],
-      "refresh": "5s",
+      "refresh": "10s",
       "schemaVersion": 27,
       "style": "dark",
       "tags": [],
@@ -846,5 +884,5 @@ data:
       "timezone": "",
       "title": "Madbox Server App Metrology",
       "uid": "XnRePzjGz",
-      "version": 4
+      "version": 2
     }
