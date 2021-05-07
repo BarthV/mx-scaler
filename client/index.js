@@ -8,8 +8,7 @@ function sleep(delay){
 
 async function connectAndDisconnect(){
 	const socket = io.connect(process.env.SRVURL, {
-		upgrade: true, // default is true
-		transport: ['polling', 'websocket'], // default is ['polling', 'websocket']
+		transports: ['websocket'] // forcing mode to websocket only, default is ['polling', 'websocket']
 	});
 	await sleep(2 * 60 * 1000); // Original sleep time was (10 * 60 * 1000) = 10min , 2min asked in document
 	socket.disconnect();

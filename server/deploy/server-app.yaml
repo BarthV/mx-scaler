@@ -34,13 +34,24 @@ spec:
         ports:
         - name: http
           containerPort: 8000
+        # # use this for running perfectly safe (empirical resources fitting)
+        # resources:
+        #   limits:
+        #     cpu: 750m
+        #     memory: 1900Mi
+        #   requests:
+        #     cpu: 750m
+        #     memory: 1900Mi
+
+        # use this when running autoscaler mode, because it helps going wild & scale more instances on my laptop
+        # some app crashes & OOM kill may happen
         resources:
           limits:
-            cpu: 750m
-            memory: 1900Mi
+            cpu: 650m
+            memory: 850Mi
           requests:
-            cpu: 750m
-            memory: 1900Mi
+            cpu: 650m
+            memory: 850Mi
 
 ---
 apiVersion: v1

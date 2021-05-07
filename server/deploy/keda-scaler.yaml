@@ -6,20 +6,21 @@ metadata:
 spec:
   scaleTargetRef:
     name: server
+  # let's set pretty aggressive scaling timings, according to our 2min client lifetime.
   pollingInterval: 4
   cooldownPeriod:  10
   minReplicaCount: 1
-  maxReplicaCount: 20
+  maxReplicaCount: 15
   advanced:
     restoreToOriginalReplicaCount: true
     horizontalPodAutoscalerConfig:
       behavior:
         scaleDown:
-          stabilizationWindowSeconds: 50
+          stabilizationWindowSeconds: 45 # wait 45s to confirm that we can really scale down our infrastructure
           policies:
           - type: Percent
-            value: 66
-            periodSeconds: 15
+            value: 66         # don't scale down too fast to produce some visible & progressive results in dashboards
+            periodSeconds: 15 # same here
   triggers:
   - type: prometheus
     metadata:
