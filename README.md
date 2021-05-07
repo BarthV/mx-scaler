@@ -42,3 +42,27 @@ Testing server app behavior when scaling on multiple instances behind default se
 * 
 
 ## how to
+_Tested & validated on ubuntu 20.04.2 + microk8s (containerd 1.3.7 + kube 1.20.6)_
+```bash
+# install microk8s
+sudo snap install microk8s --classic
+microk8s enable dns registry
+
+# build and push applications to the local microk8s registry
+docker build -f server/Dockerfile -t localhost:32000/server ./server/ && docker push localhost:32000/server
+docker build -f client/Dockerfile -t localhost:32000/client ./client/ && docker push localhost:32000/client
+
+# install platform requirements
+kubectl apply -k k8s/platform
+kubectl apply -k k8s/platform # a second time is required a couple second after because of CRD chicken-and-egg issue 
+
+# wait for all system containers and controllers to be started and ready ...
+
+# install mx client & server
+kubectl apply -k k8s/mx-app
+
+# to visualize dashboards :
+kubectl port-forward -n monitoring svc/prometheus-grafana 3000:80
+# now you can visit
+http://127.0.0.1:3000 # credentials = admin / admin
+```
